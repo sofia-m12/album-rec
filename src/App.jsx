@@ -7,6 +7,7 @@ const clientSecret = import.meta.env.VITE_CLIENT_SECRET;
 
 function App() {
   const [searchInput, setSearchInput] = useState(""); //Use for API request
+  const [albums, setAlbums] = useState([]);
   const [accessToken, setAccessToken] = useState("");
 
   //Hook
@@ -30,6 +31,29 @@ function App() {
     },
   []);
 
+  async function search() {
+    let artistParams = {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + accessToken,
+      },
+    }
+    
+    //Get artist
+    const artistID = await fetch(
+      "https://api.spotify.com/v1/search?q=" + searchInput + "&type=artist",
+      artistParams
+    )
+      .then((result) => result.json())
+      .then((data) => {
+        return data.artists.items[0].id;
+      });
+
+      console.log("search input: " + searchInput);
+      console.log("artist id: " + artistID);
+  }
+
   return (
     <Container>
       <InputGroup>
@@ -37,8 +61,12 @@ function App() {
           placeholder="artist"
           type="input"
           aria-label="artist"
-          onKeyDown={} // search function
-          onChange={} // setSearch
+          onKeyDown={(event) => {
+            if (event.key === "Enter") {
+              search();
+            }
+          }} // search function
+          onChange={(event) => setSearchInput(event.target.value)} // setSearch
           style={{
             width: "300px",
             height: "35px",
@@ -50,7 +78,7 @@ function App() {
           }}
         />
 
-        <Button onClick={{}}>Search</Button>
+        <Button onClick={search}>Search</Button>
       </InputGroup>
     </Container>
   );
