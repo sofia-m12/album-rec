@@ -1,14 +1,14 @@
 
 import './App.css'
-import { FormControl, InputGroup, Container, Button } from "react-bootstrap";
+import { FormControl, InputGroup, Container, Button, Card, Row } from "react-bootstrap";
 import { useState, useEffect } from "react";
 const clientID = import.meta.env.VITE_CLIENT_ID;
 const clientSecret = import.meta.env.VITE_CLIENT_SECRET;
 
 function App() {
-  const [searchInput, setSearchInput] = useState(""); //Use for API request
-  const [albums, setAlbums] = useState([]);
-  const [accessToken, setAccessToken] = useState("");
+  const [searchInput, setSearchInput] = useState("");
+  const [albums, setAlbums] = useState([]);  //Initialized as empty array/list
+  const [accessToken, setAccessToken] = useState(""); //Use for API request
 
   //Hook
   useEffect( () => {
@@ -40,7 +40,7 @@ function App() {
       },
     }
     
-    //Get artist
+    //GET artist
     const artistID = await fetch(
       "https://api.spotify.com/v1/search?q=" + searchInput + "&type=artist",
       artistParams
@@ -50,8 +50,19 @@ function App() {
         return data.artists.items[0].id;
       });
 
+    //GET albums
+    await fetch(
+      "https://api.spotify.com/v1/artists/" + artistID + "/albums?include_groups=album&market=US&limit=30",
+      artistParams
+    )
+      .then((result) => result.json())
+      .then((data) => {
+        setAlbums(data.items);  
+      });
+
       console.log("search input: " + searchInput);
       console.log("artist id: " + artistID);
+      console.log("albums: " + setAlbums);
   }
 
   return (
