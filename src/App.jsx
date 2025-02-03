@@ -127,15 +127,27 @@ function App() {
                 <Card.Body>
                   <Card.Title
                     style={{
+                      display: "flex", 
+                      justifyContent: "flex-start",
+                      alignItems: "center",
                       whiteSpace: "wrap",
                       fontWeight: "normal",
-                      maxWidth: "fit-content",
+                      maxWidth: "90%",
                       fontSize: "20px",
                       marginTop: "10px",
                       color: "white",
                       fontFamily: "cursive",
                     }}>
                     {album.name}
+                    <Button
+                      style={{
+                        maxWidth: "fit-content",
+                        marginLeft: "5px",
+                        borderRadius: "70%",
+                      }}
+                      >Icon
+                    </Button>
+                    #onClick=displayFeatures'Albums
                   </Card.Title>
                   <Card.Text
                     style={{color: "white", fontWeight: "lighter", fontFamily: "cursive",}}>
