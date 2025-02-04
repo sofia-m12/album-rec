@@ -111,34 +111,36 @@ function App() {
               <Card
                 key={album.id}
                 style={{
-                  backgroundColor: "black",
+                  backgroundColor: 'purple',
                   margin: "10px",
-                  borderRadius: "1%",
+                  borderRadius: "3%",
                   marginBottom: "30px",
+                  width: "200px",
+                  height: "375px",
                 }}
               >
-                <Card.Img
+                <Card.Title
+                    style={{
+                      whiteSpace: "wrap",
+                      fontWeight: "normal",
+                      maxWidth: "100%",
+                      fontSize: "20px",
+                      marginTop: "5px",
+                      color: "white",
+                      fontFamily: "fangsong",
+                    }}>
+                    {album.name}
+                </Card.Title>
+                <Card.Img 
                   width={180}
                   src={album.images[0].url}
                   style={{
-                    borderRadius: "60%",
+                    borderRadius: "3%",
+                    marginTop: "10px",
+                    marginBottom: "15px",
                   }}
                 />
                 <Card.Body>
-                  <Card.Title
-                    style={{
-                      display: "flex", 
-                      justifyContent: "flex-start",
-                      alignItems: "center",
-                      whiteSpace: "wrap",
-                      fontWeight: "normal",
-                      maxWidth: "90%",
-                      fontSize: "20px",
-                      marginTop: "10px",
-                      color: "white",
-                      fontFamily: "cursive",
-                    }}>
-                    {album.name}
                     <Button
                       style={{
                         maxWidth: "fit-content",
@@ -147,10 +149,9 @@ function App() {
                       }}
                       >Icon
                     </Button>
-                    #onClick=displayFeatures'Albums
-                  </Card.Title>
+
                   <Card.Text
-                    style={{color: "white", fontWeight: "lighter", fontFamily: "cursive",}}>
+                    style={{color: "white", fontWeight: "lighter", fontFamily: "fangsong",}}>
                     Released: {album.release_date}
                   </Card.Text>
                   <Button
@@ -164,7 +165,7 @@ function App() {
                       borderWidth: "5px",
                       borderColor: "white",
                       padding: "10px",
-                      fontFamily: "cursive",
+                      fontFamily: "fangsong",
                     }}>
                     LINK!
                   </Button>
