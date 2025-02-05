@@ -7,7 +7,8 @@ const clientSecret = import.meta.env.VITE_CLIENT_SECRET;
 
 function App() {
   const [searchInput, setSearchInput] = useState("");
-  const [albums, setAlbums] = useState([]);  //Initialized as empty array/list
+  const [albums, setAlbums] = useState([]);
+  const [featuredArtists, setFeaturedArtists] = useState([]); 
   const [accessToken, setAccessToken] = useState(""); //Use for API request
 
   //Hook
@@ -59,6 +60,38 @@ function App() {
       .then((data) => {
         setAlbums(data.items);  
       });
+
+      //GET album features
+      async function getAlbumTracks(albumID) {
+        let trackParams = {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: "Bearer " + accessToken,
+          },
+        };
+
+        //Getting the tracks on the specified album
+        const tracks = await fetch(
+          "https://api.spotify.com/v1/albums/${albumID}/tracks",
+          trackParams
+        )
+        .then((result) => result.json)
+        .then((data) => data.items);
+
+        //Get all the artists on the album
+        const artistList = new Set();
+        tracks.items.forEach((track) => {
+          track.artists.forEach((artist) => {
+            artistList.add(artist.id);
+          });
+        });
+
+        //get theses artists albums and display!
+
+        //Convert set to array for rendering
+        setFeaturedArtists(Array.from(artistList));
+      }
 
       console.log("search input: " + searchInput);
       console.log("artist id: " + artistID);
@@ -127,7 +160,7 @@ function App() {
                       fontSize: "20px",
                       marginTop: "5px",
                       color: "white",
-                      fontFamily: "fangsong",
+                      fontFamily: "sans-serif",
                     }}>
                     {album.name}
                 </Card.Title>
@@ -151,23 +184,23 @@ function App() {
                     </Button>
 
                   <Card.Text
-                    style={{color: "white", fontWeight: "lighter", fontFamily: "fangsong",}}>
+                    style={{color: "white", fontWeight: "lighter", fontFamily: "sans-serif",}}>
                     Released: {album.release_date}
                   </Card.Text>
                   <Button
                     href={album.external_urls.spotify}
                     style={{
                       backgroundColor: "black",
-                      color: "blueviolet",
+                      color: "#1ED760",
                       fontWeight: "normal",
-                      fontSize: "15px",
+                      fontSize: "10px",
                       borderRadius: "5px",
                       borderWidth: "5px",
                       borderColor: "white",
                       padding: "10px",
-                      fontFamily: "fangsong",
+                      fontFamily: "sans-serif",
                     }}>
-                    LINK!
+                    SPOTIFY
                   </Button>
                 </Card.Body>
               </Card>
