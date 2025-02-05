@@ -8,7 +8,7 @@ const clientSecret = import.meta.env.VITE_CLIENT_SECRET;
 function App() {
   const [searchInput, setSearchInput] = useState("");
   const [albums, setAlbums] = useState([]);
-  const [featuredArtists, setFeaturedArtists] = useState([]); 
+  const [expandedAlbums, setExpandedAlbums] = useState([]); 
   const [accessToken, setAccessToken] = useState(""); //Use for API request
 
   //Hook
@@ -63,34 +63,55 @@ function App() {
 
       //GET album features
       async function getAlbumTracks(albumID) {
-        let trackParams = {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: "Bearer " + accessToken,
-          },
-        };
+        try{
+          let trackParams = {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: "Bearer " + accessToken,
+            },
+          };
 
-        //Getting the tracks on the specified album
-        const tracks = await fetch(
-          "https://api.spotify.com/v1/albums/${albumID}/tracks",
-          trackParams
-        )
-        .then((result) => result.json)
-        .then((data) => data.items);
+          //Getting the tracks on the specified album
+          const tracks = await fetch(
+            "https://api.spotify.com/v1/albums/" + albumID + "/tracks",
+            trackParams
+          )
+          .then((result) => result.json)
+          .then((data) => data.items);
 
-        //Get all the artists on the album
-        const artistList = new Set();
-        tracks.items.forEach((track) => {
-          track.artists.forEach((artist) => {
-            artistList.add(artist.id);
+          //Get all the artists on the album
+          const artistData = new Map();
+          tracks.items.forEach((track) => {
+            track.artists.forEach((artist) => {
+              artistData.set(artist.id, artist.name);
+            });
           });
-        });
 
-        //get theses artists albums and display!
+          //get theses artists albums
+          const featuredArtistsAlbums = [];
+          for(const [fartistID, fartistName] of artistData.entries()) {
+            const falbumsResponse = await fetch(
+              "https://api.spotify.com/v1/artists/" + fartistID + "/albums?include_groups=album&market=US&limit=5",
+              {
+                method: "GET",
+                headers: {
+                  Authorization: `Bearer ${accessToken}`,
+                },
+              }
+            );
 
-        //Convert set to array for rendering
-        setFeaturedArtists(Array.from(artistList));
+            const albumData = await falbumsResponse.json();
+            featuredArtistsAlbums.push({
+              fartistName,
+              albums: albumData.items,
+            });
+          }
+          //Convert the map entries to array for rendering
+          setExpandedAlbums(featuredArtistsAlbums);
+        } catch(error) {
+        console.error("Error fetching data: ", error);
+        }
       }
 
       console.log("search input: " + searchInput);
@@ -180,7 +201,7 @@ function App() {
                         marginLeft: "5px",
                         borderRadius: "70%",
                       }}
-                      >Icon
+                      onClick={getAlbumTracks(album.id)}>Icon
                     </Button>
 
                   <Card.Text
