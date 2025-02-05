@@ -201,7 +201,7 @@ function App() {
                         marginLeft: "5px",
                         borderRadius: "70%",
                       }}
-                      onClick={getAlbumTracks(album.id)}>Icon
+                      onClick={getAlbumTracks(album.id)}>Expand
                     </Button>
 
                   <Card.Text
