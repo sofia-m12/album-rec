@@ -65,6 +65,7 @@ function App() {
   //GET album features
   async function getAlbumTracks(albumID) {
     try{
+      console.log("ALBUM CLICKED");
       let trackParams = {
         method: "GET",
         headers: {
@@ -161,22 +162,20 @@ function App() {
                 <Card
                   key={album.id}
                   style={{
-                    backgroundColor: "#D3F1DF",
+                    backgroundColor: "#000000",
                     margin: "10px",
                     borderRadius: "3%",
-                    marginBottom: "30px",
-                    width: "200px",
-                    height: "375px",
+                    borderStyle: 'solid',
+                    borderColor:'white',
+                    marginBottom: "10px",
                   }}
                 >
                   <Card.Title
                       style={{
-                        whiteSpace: "wrap",
                         fontWeight: "normal",
                         maxWidth: "100%",
                         fontSize: "20px",
-                        marginTop: "5px",
-                        color: "black",
+                        color: "white",
                         fontFamily: "sans-serif",
                       }}>
                       {album.name}
@@ -186,40 +185,31 @@ function App() {
                     src={album.images[0].url}
                     style={{
                       borderRadius: "3%",
-                      marginTop: "10px",
-                      marginBottom: "15px",
                     }}
                   />
                   <Card.Body>
+                    <div className="d-flex align-items-center justify-content-between">
+                      <Card.Text
+                        style={{color: "white", fontWeight: "lighter", fontFamily: "sans-serif",}}>
+                        {album.release_date}
+                      </Card.Text>
                       <Button
+                        href={album.external_urls.spotify}
                         style={{
-                          maxWidth: "fit-content",
-                          marginLeft: "5px",
-                          borderRadius: "70%",
-                          backgroundColor: "#85A98F",
-                        }}
-                        onClick={getAlbumTracks(album.id)}>Expand
+                          backgroundColor: "#181C14",
+                          color: "#1ED760",
+                          fontWeight: "normal",
+                          fontSize: "10px",
+                          borderRadius: "3px",
+                          borderWidth: "2px",
+                          borderColor: "white",
+                          borderStyle: "solid",
+                          padding: "10px",
+                          fontFamily: "sans-serif",
+                        }}>
+                        SPOTIFY
                       </Button>
-
-                    <Card.Text
-                      style={{color: "black", fontWeight: "lighter", fontFamily: "sans-serif",}}>
-                      Released: {album.release_date}
-                    </Card.Text>
-                    <Button
-                      href={album.external_urls.spotify}
-                      style={{
-                        backgroundColor: "#181C14",
-                        color: "#1ED760",
-                        fontWeight: "normal",
-                        fontSize: "10px",
-                        borderRadius: "5px",
-                        borderWidth: "5px",
-                        borderColor: "white",
-                        padding: "10px",
-                        fontFamily: "sans-serif",
-                      }}>
-                      SPOTIFY
-                    </Button>
+                    </div>
                   </Card.Body>
                 </Card>
               );
@@ -272,6 +262,7 @@ function App() {
                     marginTop: "10px",
                     marginBottom: "15px",
                   }}
+                  onClick={getAlbumTracks(eAlbum.id)}
                 />
                 <Card.Body>
                 <Button
@@ -281,7 +272,7 @@ function App() {
                           borderRadius: "70%",
                           backgroundColor: "#85A98F",
                         }}
-                        onClick={getAlbumTracks(eAlbum.id)}>Expand
+                        /*onClick={getAlbumTracks(eAlbum.id)} */>Expand
                       </Button>
 
                     <Card.Text
