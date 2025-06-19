@@ -65,7 +65,6 @@ function App() {
   //GET album features
   async function getAlbumTracks(albumID) {
     try{
-      console.log("ALBUM CLICKED");
       let trackParams = {
         method: "GET",
         headers: {
@@ -74,17 +73,23 @@ function App() {
         },
       };
 
-      //Getting the tracks on the specified album
-      const tracks = await fetch(
+      //Getting the array of tracks on the specified album
+      let tracks;
+      await fetch(
         "https://api.spotify.com/v1/albums/" + albumID + "/tracks",
         trackParams
       )
       .then((result) => result.json())
-      .then((data) => data.items);
+      .then((data) => {tracks = data.items;});
+      console.log("tracks:", tracks); //TESTING
 
       //Get all the artists on the album
       const artistData = new Map();
-      tracks.items.forEach((track) => {
+      if(!tracks) {
+        console.log("No tracks found for album: ", albumID);
+        return;
+      }
+      tracks.forEach((track) => {
         track.artists.forEach((artist) => {
           artistData.set(artist.id, artist.name);
         });
@@ -109,12 +114,16 @@ function App() {
           albums: albumData.items,
         });
       }
+      console.log("featuredArtistsAlbums:", featuredArtistsAlbums); //TEST, might need to set expanded albums to just the album array?
       //Convert the map entries to array for rendering
       setExpandedAlbums(featuredArtistsAlbums);
     } catch(error) {
-    console.error("Error fetching data: ", error);
+      console.error("Error fetching data: ", error);
     }
   }
+  useEffect(() => {
+  console.log("expandedAlbums updated:", expandedAlbums); //logging expandedAlbums for testing
+}, [expandedAlbums]);
 
   return (
     <Container>
@@ -171,14 +180,14 @@ function App() {
                   }}
                 >
                   <Card.Title
-                      style={{
-                        fontWeight: "normal",
-                        maxWidth: "100%",
-                        fontSize: "20px",
-                        color: "white",
-                        fontFamily: "sans-serif",
-                      }}>
-                      {album.name}
+                    style={{
+                      fontWeight: "normal",
+                      maxWidth: "100%",
+                      fontSize: "20px",
+                      color: "white",
+                      fontFamily: "sans-serif",
+                    }}>
+                    {album.name}
                   </Card.Title>
                   <Card.Img 
                     width={180}
@@ -186,6 +195,10 @@ function App() {
                     style={{
                       borderRadius: "3%",
                     }}
+                    onClick={() => { 
+                    console.log('Album cover clicked', album.id); //TEST
+                    getAlbumTracks(album.id)}}
+                    
                   />
                   <Card.Body>
                     <div className="d-flex align-items-center justify-content-between">
@@ -195,6 +208,8 @@ function App() {
                       </Card.Text>
                       <Button
                         href={album.external_urls.spotify}
+                        target="_blank" //opens link in new tab
+                        rel="noopener noreferrer"
                         style={{
                           backgroundColor: "#181C14",
                           color: "#1ED760",
@@ -262,7 +277,9 @@ function App() {
                     marginTop: "10px",
                     marginBottom: "15px",
                   }}
-                  onClick={getAlbumTracks(eAlbum.id)}
+                  onClick={() => { 
+                    console.log('Album cover clicked', eAlbum.id); //TEST
+                    getAlbumTracks(eAlbum.id)}}
                 />
                 <Card.Body>
                 <Button
