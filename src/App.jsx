@@ -97,7 +97,8 @@ function App() {
 
       //get theses artists albums
       const featuredArtistsAlbums = [];
-      for(const [fartistID, fartistName] of artistData.entries()) {
+      const artistEntries = Array.from(artistData.entries()).slice(1); //skip the first entry so the current artist is not rendered twice
+      for(const [fartistID, fartistName] of artistEntries) {
         const falbumsResponse = await fetch(
           "https://api.spotify.com/v1/artists/" + fartistID + "/albums?include_groups=album&market=US&limit=5",
           {
@@ -114,7 +115,7 @@ function App() {
           albums: albumData.items,
         });
       }
-      console.log("featuredArtistsAlbums:", featuredArtistsAlbums); //TEST, might need to set expanded albums to just the album array?
+      //console.log("featuredArtistsAlbums:", featuredArtistsAlbums); //TEST, might need to set expanded albums to just the album array?
       //Convert the map entries to array for rendering
       setExpandedAlbums(featuredArtistsAlbums);
     } catch(error) {
@@ -122,8 +123,8 @@ function App() {
     }
   }
   useEffect(() => {
-  console.log("expandedAlbums updated:", expandedAlbums); //logging expandedAlbums for testing
-}, [expandedAlbums]);
+  //console.log("expandedAlbums updated:", expandedAlbums); //logging expandedAlbums for testing
+  }, [expandedAlbums]);
 
   return (
     <Container>
