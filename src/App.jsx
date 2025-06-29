@@ -1,4 +1,3 @@
-
 import './App.css'
 import { FormControl, InputGroup, Container, Button, Card, Row } from "react-bootstrap";
 import { useState, useEffect } from "react";
@@ -117,7 +116,7 @@ function App() {
       }
       //console.log("featuredArtistsAlbums:", featuredArtistsAlbums); //TEST, might need to set expanded albums to just the album array?
       //Convert the map entries to array for rendering
-      setExpandedAlbums(featuredArtistsAlbums);
+      setExpandedAlbums(prev => [...prev, ...featuredArtistsAlbums]); //adding to list so previous renders not replaced
     } catch(error) {
       console.error("Error fetching data: ", error);
     }
