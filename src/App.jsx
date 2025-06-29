@@ -129,200 +129,192 @@ function App() {
   return (
     <Container>
       <Container style={{fontFamily: "cursive",
-        fontSize: "40px",
-        }}>Enrich Your Music Taste!
+      fontSize: "40px",
+      }}>Enrich Your Music Taste!
       </Container>
       <InputGroup>
-        <FormControl
-          placeholder="artist"
-          type="input"
-          aria-label="artist"
-          onKeyDown={(event) => {
-            if (event.key === "Enter") {
-              search();
-            }
-          }} // search function
-          onChange={(event) => setSearchInput(event.target.value)} // setSearch
-          style={{
-            width: "300px",
-            height: "35px",
-            borderWidth: "1px",
-            borderStyle: "dotted",
-            borderRadius: "5px",
-            marginRight: "10px",
-            paddingLeft: "10px",
-          }}
-        />
+      <FormControl
+        placeholder="artist"
+        type="input"
+        aria-label="artist"
+        onKeyDown={(event) => {
+        if (event.key === "Enter") {
+          search();
+        }
+        }} // search function
+        onChange={(event) => setSearchInput(event.target.value)} // setSearch
+        style={{
+        width: "300px",
+        height: "35px",
+        borderWidth: "1px",
+        borderStyle: "dotted",
+        borderRadius: "5px",
+        marginRight: "10px",
+        paddingLeft: "10px",
+        }}
+      />
 
-        <Button onClick={search}>Search</Button>
+      <Button onClick={search}>Search</Button>
       </InputGroup>
       <Container>
-        <Row
-          style={{
-            display: "flex",
-            flexDirection: "row",
-            flexWrap: "wrap",
-            justifyContent: "space-around",
-            alignContent: "center",
-          }}>
-          {
-            //Displaying each album as a Card
-            albums.map((album) => {
-              return (
-                <Card
-                  key={album.id}
-                  style={{
-                    backgroundColor: "#000000",
-                    margin: "10px",
-                    borderRadius: "3%",
-                    borderStyle: 'solid',
-                    borderColor:'white',
-                    marginBottom: "10px",
-                  }}
-                >
-                  <Card.Title
-                    style={{
-                      fontWeight: "normal",
-                      maxWidth: "100%",
-                      fontSize: "20px",
-                      color: "white",
-                      fontFamily: "sans-serif",
-                    }}>
-                    {album.name}
-                  </Card.Title>
-                  <Card.Img 
-                    width={180}
-                    src={album.images[0].url}
-                    style={{
-                      borderRadius: "3%",
-                    }}
-                    onClick={() => { 
-                    console.log('Album cover clicked', album.id); //TEST
-                    getAlbumTracks(album.id)}}
-                    
-                  />
-                  <Card.Body>
-                    <div className="d-flex align-items-center justify-content-between">
-                      <Card.Text
-                        style={{color: "white", fontWeight: "lighter", fontFamily: "sans-serif",}}>
-                        {album.release_date}
-                      </Card.Text>
-                      <Button
-                        href={album.external_urls.spotify}
-                        target="_blank" //opens link in new tab
-                        rel="noopener noreferrer"
-                        style={{
-                          backgroundColor: "#181C14",
-                          color: "#1ED760",
-                          fontWeight: "normal",
-                          fontSize: "10px",
-                          borderRadius: "3px",
-                          borderWidth: "2px",
-                          borderColor: "white",
-                          borderStyle: "solid",
-                          padding: "10px",
-                          fontFamily: "sans-serif",
-                        }}>
-                        SPOTIFY
-                      </Button>
-                    </div>
-                  </Card.Body>
-                </Card>
-              );
-            })
-          }
-        </Row>
+      <Row
+        style={{
+        display: "flex",
+        flexDirection: "row",
+        flexWrap: "wrap",
+        justifyContent: "space-around",
+        alignContent: "center",
+        }}>
+        {
+        //Displaying each album as a Card
+        albums.map((album) => {
+          return (
+          <Card
+            key={album.id}
+            style={{
+            backgroundColor: "#000000",
+            margin: "10px",
+            borderRadius: "3%",
+            borderStyle: 'solid',
+            borderColor:'white',
+            marginBottom: "10px",
+            }}
+          >
+            <Card.Title
+            style={{
+              fontWeight: "normal",
+              maxWidth: "100%",
+              fontSize: "20px",
+              color: "white",
+              fontFamily: "sans-serif",
+            }}>
+            {album.name}
+            </Card.Title>
+            <Card.Img 
+            width={180}
+            src={album.images[0].url}
+            style={{
+              borderRadius: "3%",
+            }}
+            onClick={() => { 
+            console.log('Album cover clicked', album.id); //TEST
+            getAlbumTracks(album.id)}}
+            
+            />
+            <Card.Body>
+            <div className="d-flex align-items-center justify-content-between">
+              <Card.Text
+              style={{color: "white", fontWeight: "lighter", fontFamily: "sans-serif",}}>
+              {album.release_date}
+              </Card.Text>
+              <Button
+              href={album.external_urls.spotify}
+              target="_blank" //opens link in new tab
+              rel="noopener noreferrer"
+              style={{
+                backgroundColor: "#181C14",
+                color: "#1ED760",
+                fontWeight: "normal",
+                fontSize: "10px",
+                borderRadius: "3px",
+                borderWidth: "2px",
+                borderColor: "white",
+                borderStyle: "solid",
+                padding: "10px",
+                fontFamily: "sans-serif",
+              }}>
+              SPOTIFY
+              </Button>
+            </div>
+            </Card.Body>
+          </Card>
+          );
+        })
+        }
+      </Row>
       </Container>
 
       {expandedAlbums && expandedAlbums.length > 0 && (
-        <Container>
-          <h1 style={{fontFamily: "sans-serif", marginTop: "15px",}}>
-          Featured Artists Albums:
-          </h1>
-         <Row 
+      <Container>
+        <h1 style={{fontFamily: "sans-serif", marginTop: "15px",}}>
+        Featured Artists Albums:
+        </h1>
+       <Row 
+        style={{
+        display: "flex",
+        flexDirection: "row",
+        flexWrap: "wrap",
+        justifyContent: "space-around",
+        alignContent: "center",
+        }}>
+        {expandedAlbums.map((eArtist) => (
+        eArtist.albums.map((eAlbum) => (
+          <Card
+          key={eAlbum.id}
           style={{
-            display: "flex",
-            flexDirection: "row",
-            flexWrap: "wrap",
-            justifyContent: "space-around",
-            alignContent: "center",
+            backgroundColor: "#000000",
+            margin: "10px",
+            borderRadius: "3%",
+            borderStyle: 'solid',
+            borderColor:'white',
+            marginBottom: "10px",
           }}>
-          {expandedAlbums.map((eArtist) => (
-            eArtist.albums.map((eAlbum) => (
-              <Card
-                key={eAlbum.id}
-                style={{
-                  backgroundColor: "#D3F1DF",
-                  margin: "10px",
-                  borderRadius: "3%",
-                  marginBottom: "30px",
-                  width: "200px",
-                  height: "375px",
-                }}>
-                <Card.Title
-                      style={{
-                        whiteSpace: "wrap",
-                        fontWeight: "normal",
-                        maxWidth: "100%",
-                        fontSize: "20px",
-                        marginTop: "5px",
-                        color: "black",
-                        fontFamily: "sans-serif",
-                      }}>
-                      {eAlbum.name}
-                  </Card.Title>
-                <Card.Img
-                  src={eAlbum.images[0].url}
-                  style={{
-                    borderRadius: "3%",
-                    marginTop: "10px",
-                    marginBottom: "15px",
-                  }}
-                  onClick={() => { 
-                    console.log('Album cover clicked', eAlbum.id); //TEST
-                    getAlbumTracks(eAlbum.id)}}
-                />
-                <Card.Body>
-                <Button
-                        style={{
-                          maxWidth: "fit-content",
-                          marginLeft: "5px",
-                          borderRadius: "70%",
-                          backgroundColor: "#85A98F",
-                        }}
-                        /*onClick={getAlbumTracks(eAlbum.id)} */>Expand
-                      </Button>
-
-                    <Card.Text
-                      style={{color: "black", fontWeight: "lighter", fontFamily: "sans-serif",}}>
-                      Released: {eAlbum.release_date}
-                    </Card.Text>
-                    <Button
-                      href={eAlbum.external_urls.spotify}
-                      style={{
-                        backgroundColor: "#181C14",
-                        color: "#1ED760",
-                        fontWeight: "normal",
-                        fontSize: "10px",
-                        borderRadius: "5px",
-                        borderWidth: "5px",
-                        borderColor: "white",
-                        padding: "10px",
-                        fontFamily: "sans-serif",
-                      }}>
-                      SPOTIFY
-                    </Button>
-                </Card.Body>
-              </Card>
-            ))
-          ))
-          }
-         </Row>
+          <Card.Title
+            style={{
+            fontWeight: "normal",
+            maxWidth: "100%",
+            fontSize: "20px",
+            color: "white",
+            fontFamily: "sans-serif",
+            }}>
+            {eAlbum.name}
+          </Card.Title>
+          <Card.Img
+            width={180}
+            src={eAlbum.images[0].url}
+            style={{
+            borderRadius: "3%",
+            }}
+            onClick={() => { 
+            console.log('Album cover clicked', eAlbum.id); //TEST
+            getAlbumTracks(eAlbum.id)}}
+          />
+          <Card.Body>
+            <div className="d-flex align-items-center justify-content-between">
+            <Card.Text
+              style={{color: "white", fontWeight: "lighter", fontFamily: "sans-serif",}}>
+              {eAlbum.release_date}
+            </Card.Text>
+            <Button
+              href={eAlbum.external_urls.spotify}
+              target="_blank"
+              rel="noopener noreferrer"
+              style={{
+              backgroundColor: "#181C14",
+              color: "#1ED760",
+              fontWeight: "normal",
+              fontSize: "10px",
+              borderRadius: "3px",
+              borderWidth: "2px",
+              borderColor: "white",
+              borderStyle: "solid",
+              padding: "10px",
+              fontFamily: "sans-serif",
+              }}>
+              SPOTIFY
+            </Button>
+            </div>
+          </Card.Body>
+          </Card>
+        ))
+        ))
+        }
+       </Row>
        </Container>
        )
       }
     </Container>
-  );
+    );
 }
 
 export default App
