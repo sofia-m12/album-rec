@@ -242,6 +242,9 @@ function App() {
         </h1>
         {expandedAlbums.map((eArtist, index) => (
           <div key={index} style={{width : "100%"}}>
+            <h2 style={{fontFamily: "sans-serif", marginTop: "15px",}}>
+              {eArtist.fartistName}'s Albums:
+            </h2>
             <Row 
               style={{
               display: "flex",
