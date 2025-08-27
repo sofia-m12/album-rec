@@ -9,6 +9,7 @@ function App() {
   const [albums, setAlbums] = useState([]);
   const [expandedAlbums, setExpandedAlbums] = useState([]); 
   const [accessToken, setAccessToken] = useState(""); //Use for API request
+  const [hasSearched, setHasSearched] = useState(false);
 
   //Hook
   useEffect( () => {
@@ -33,6 +34,7 @@ function App() {
 
   async function search() { //user search function
     setExpandedAlbums([]); //reset expanded albums
+    setHasSearched(true);
     let artistParams = {
       method: "GET",
       headers: {
@@ -110,14 +112,20 @@ function App() {
         );
 
         const albumData = await falbumsResponse.json();
-        featuredArtistsAlbums.push({
-          fartistName,
-          albums: albumData.items,
-        });
+
+        //check that featured artist actually have albums to render
+        if (albumData.items && albumData.items.length > 0) {
+          featuredArtistsAlbums.push({
+            fartistName,
+            albums: albumData.items,
+          });
+        }
       }
       //console.log("featuredArtistsAlbums:", featuredArtistsAlbums); //TEST, might need to set expanded albums to just the album array?
       //Convert the map entries to array for rendering
-      setExpandedAlbums(prev => [...prev, ...featuredArtistsAlbums]); //adding to list so previous renders not replaced
+      if (featuredArtistsAlbums.length > 0) {
+        setExpandedAlbums(prev => [...prev, ...featuredArtistsAlbums]); //adding to list so previous renders not replaced
+      }
     } catch(error) {
       console.error("Error fetching data: ", error);
     }
@@ -235,7 +243,7 @@ function App() {
       </Row>
       </Container>
 
-      {expandedAlbums && expandedAlbums.length > 0 && ( //feature artists rendering
+      {hasSearched && ( expandedAlbums && expandedAlbums.length > 0 ? ( //feature artists rendering
       <Container>
         <h1 style={{fontFamily: "sans-serif", marginTop: "15px",}}>
         Featured Artists Albums:
@@ -320,7 +328,13 @@ function App() {
         </div>
         ))}
        </Container>
-       )
+       ) : (
+        <Container>
+          <h2 style={{fontFamily: "sans-serif", marginTop: "15px",}}>
+            No featured artist / featured artists have no albums
+          </h2>
+        </Container>
+       ))
       }
     </Container>
     );
