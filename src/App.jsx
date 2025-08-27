@@ -31,7 +31,8 @@ function App() {
     },
   []);
 
-  async function search() {
+  async function search() { //user search function
+    setExpandedAlbums([]); //reset expanded albums
     let artistParams = {
       method: "GET",
       headers: {
@@ -133,6 +134,7 @@ function App() {
       </Container>
       <InputGroup>
       <FormControl
+        id="searchInput"
         placeholder="artist"
         type="input"
         aria-label="artist"
