@@ -235,21 +235,22 @@ function App() {
       </Row>
       </Container>
 
-      {expandedAlbums && expandedAlbums.length > 0 && (
+      {expandedAlbums && expandedAlbums.length > 0 && ( //feature artists rendering
       <Container>
         <h1 style={{fontFamily: "sans-serif", marginTop: "15px",}}>
         Featured Artists Albums:
         </h1>
-       <Row 
-        style={{
-        display: "flex",
-        flexDirection: "row",
-        flexWrap: "wrap",
-        justifyContent: "space-around",
-        alignContent: "center",
-        }}>
-        {expandedAlbums.map((eArtist) => (
-        eArtist.albums.map((eAlbum) => (
+        {expandedAlbums.map((eArtist, index) => (
+          <div key={index} style={{width : "100%"}}>
+            <Row 
+              style={{
+              display: "flex",
+              flexDirection: "row",
+              flexWrap: "wrap",
+              justifyContent: "space-around",
+              alignContent: "center",
+              }}>
+          {eArtist.albums.map((eAlbum) => (
           <Card
           key={eAlbum.id}
           style={{
@@ -307,10 +308,14 @@ function App() {
             </div>
           </Card.Body>
           </Card>
-        ))
-        ))
-        }
-       </Row>
+        ))}
+        </Row>
+          {/* Divider only if not the last artist */}
+          {index < expandedAlbums.length - 1 && (
+            <hr className="artist-divider" />
+          )}
+        </div>
+        ))}
        </Container>
        )
       }
