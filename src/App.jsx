@@ -10,6 +10,7 @@ function App() {
   const [expandedAlbums, setExpandedAlbums] = useState([]); 
   const [accessToken, setAccessToken] = useState(""); //Use for API request
   const [hasSearched, setHasSearched] = useState(false);
+  const [noFeatures, setNoFeatures] = useState([]); //tracks which albums have no features
 
   //Hook
   useEffect( () => {
@@ -126,9 +127,12 @@ function App() {
       //Convert the map entries to array for rendering
       if (featuredArtistsAlbums.length > 0) {
         setExpandedAlbums(prev => [...prev, ...featuredArtistsAlbums]); //adding to list so previous renders not replaced
+      } else {
+        setNoFeatures(prev => [...prev, albumID]); //track albums with no features
       }
     } catch(error) {
       console.error("Error fetching data: ", error);
+      setNoFeatures(prev => [...prev, albumID]);
     }
   }
   useEffect(() => {
@@ -212,6 +216,11 @@ function App() {
             
             />
             <Card.Body>
+              {noFeatures.includes(album.id) && (
+                <div style={{ color: 'white', fontFamily: 'sans-serif', fontSize: '12px', marginTop: '5px' }}>
+                  No features found for this album.
+                </div>
+              )}
             <div className="d-flex align-items-center justify-content-between">
               <Card.Text
               style={{color: "white", fontWeight: "lighter", fontFamily: "sans-serif",}}>
@@ -244,7 +253,7 @@ function App() {
       </Row>
       </Container>
 
-      {hasSearched && ( expandedAlbums && expandedAlbums.length > 0 ? ( //feature artists rendering
+      {hasSearched && expandedAlbums && expandedAlbums.length > 0 && (
       <Container>
         <h1 style={{fontFamily: "sans-serif", marginTop: "15px",}}>
         Featured Artists Albums:
@@ -294,6 +303,11 @@ function App() {
             getAlbumTracks(eAlbum.id)}}
           />
           <Card.Body>
+              {noFeatures.includes(eAlbum.id) && (
+                  <div style={{ color: 'white', fontFamily: 'sans-serif', fontSize: '12px', marginTop: '5px' }}>
+                    No features found for this album.
+                  </div>
+                )}
             <div className="d-flex align-items-center justify-content-between">
             <Card.Text
               style={{color: "white", fontWeight: "lighter", fontFamily: "sans-serif",}}>
@@ -329,13 +343,7 @@ function App() {
         </div>
         ))}
        </Container>
-       ) : (
-        <Container>
-          <h2 style={{fontFamily: "sans-serif", marginTop: "15px",}}>
-            No featured artist / featured artists have no albums
-          </h2>
-        </Container>
-       ))
+       )
       }
     </Container>
     );
