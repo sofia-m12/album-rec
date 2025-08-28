@@ -55,7 +55,7 @@ function App() {
 
     //GET albums
     await fetch(
-      "https://api.spotify.com/v1/artists/" + artistID + "/albums?include_groups=album&market=US&limit=30",
+      "https://api.spotify.com/v1/artists/" + artistID + "/albums?include_groups=album&market=US&limit=50",
       artistParams
     )
       .then((result) => result.json())
@@ -103,7 +103,7 @@ function App() {
       const artistEntries = Array.from(artistData.entries()).slice(1); //skip the first entry so the current artist is not rendered twice
       for(const [fartistID, fartistName] of artistEntries) {
         const falbumsResponse = await fetch(
-          "https://api.spotify.com/v1/artists/" + fartistID + "/albums?include_groups=album&market=US&limit=5",
+          "https://api.spotify.com/v1/artists/" + fartistID + "/albums?include_groups=album&market=US&limit=50",
           {
             method: "GET",
             headers: {
