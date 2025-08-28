@@ -34,7 +34,7 @@ function App() {
 
   async function search() { //user search function
     setExpandedAlbums([]); //reset expanded albums
-    setHasSearched(true);
+
     let artistParams = {
       method: "GET",
       headers: {
@@ -62,6 +62,7 @@ function App() {
       .then((data) => {
         setAlbums(data.items);  
       });
+      setHasSearched(true); // search has been made with a response
   }
 
   //GET album features
