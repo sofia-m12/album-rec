@@ -232,6 +232,9 @@ function App() {
             borderStyle: 'solid',
             borderColor:'white',
             marginBottom: "10px",
+            flexBasis: "180px",
+            flexGrow: 1,
+            maxWidth: "250px",
             }}
           >
             <Card.Title
@@ -257,11 +260,19 @@ function App() {
             />
             <Card.Body>
               {noFeatures.includes(album.id) && (
-                <div style={{ color: 'white', fontFamily: 'sans-serif', fontSize: '12px', marginTop: '5px' }}>
-                  No features found for this album.
-                </div>
+                <Alert
+                    variant="info"
+                    style={{
+                      padding: '0.25rem 0.5rem',
+                      fontSize: '0.55rem',
+                      margin: '5px auto 0 auto',
+                      width: 'fit-content',
+                      borderRadius: '0.3rem'
+                    }}>
+                    No features found for this album
+                  </Alert>
               )}
-            <div className="d-flex align-items-center justify-content-between">
+            <div className="d-flex align-items-center flex-column">
               <Card.Text
               style={{color: "white", fontWeight: "lighter", fontFamily: "sans-serif",}}>
               {album.release_date}
@@ -321,6 +332,9 @@ function App() {
             borderStyle: 'solid',
             borderColor:'white',
             marginBottom: "10px",
+            flexBasis: "180px",
+            flexGrow: 1,
+            maxWidth: "200px",
           }}>
           <Card.Title
             style={{
@@ -344,11 +358,19 @@ function App() {
           />
           <Card.Body>
               {noFeatures.includes(eAlbum.id) && (
-                  <div style={{ color: 'white', fontFamily: 'sans-serif', fontSize: '12px', marginTop: '5px' }}>
-                    No features found for this album.
-                  </div>
+                  <Alert
+                    variant="info"
+                    style={{
+                      padding: '0.25rem 0.5rem',
+                      fontSize: '0.55rem',
+                      margin: '5px auto 0 auto',
+                      width: 'fit-content',
+                      borderRadius: '0.3rem'
+                    }}>
+                    No features found for this album
+                  </Alert>
                 )}
-            <div className="d-flex align-items-center justify-content-between">
+            <div className="d-flex align-items-center flex-column">
             <Card.Text
               style={{color: "white", fontWeight: "lighter", fontFamily: "sans-serif",}}>
               {eAlbum.release_date}
