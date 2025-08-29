@@ -72,6 +72,7 @@ function App() {
           setAlbums(data.items);  
         });
         setHasSearched(true); // search has been made with a response
+        setError(null); //clear previous error
     } catch (error) {
       console.error("Error during search:", error); //debug
       setError("An error occurred during the search. Please try again.");
