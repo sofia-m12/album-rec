@@ -30,6 +30,10 @@ function App() {
         .then((result) => result.json())
         .then((data) => {
           setAccessToken(data.access_token);
+        })
+        .catch((error) => {
+          console.error("Error fetching access token:", error);
+          setError("Failed to authenticate with Spotify API. Please try again later or refresh the page");
         });
     },
   []);
@@ -52,25 +56,47 @@ function App() {
         setHasSearched(false);
         return;
       }
+
       //GET artist
-      const artistID = await fetch(
+      const artistResponse = await fetch(
         "https://api.spotify.com/v1/search?q=" + searchInput + "&type=artist",
         artistParams
-      )
-        .then((result) => result.json())
-        .then((data) => {
-          return data.artists.items[0].id;
-        });
+      );
+      const artistData = await artistResponse.json();
+
+      //check if artist was found
+      if (!artistData.artists || artistData.artists.items.length === 0) {
+        setError("No artist found with that name. Please try again.");
+        setHasSearched(false);
+        return;
+      }
+      const artistID = artistData.artists.items[0].id;
+
+      // const artistID = await fetch(
+      //   "https://api.spotify.com/v1/search?q=" + searchInput + "&type=artist",
+      //   artistParams
+      // )
+      //   .then((result) => result.json())
+      //   .then((data) => {
+      //     return data.artists.items[0].id;
+      //   });
 
       //GET albums
-      await fetch(
-        "https://api.spotify.com/v1/artists/" + artistID + "/albums?include_groups=album&market=US&limit=50",
-        artistParams
-      )
-        .then((result) => result.json())
-        .then((data) => {
-          setAlbums(data.items);  
-        });
+       const albumResponse = await fetch(
+         "https://api.spotify.com/v1/artists/" + artistID + "/albums?include_groups=album&market=US&limit=50",
+         artistParams
+       );
+       const albumData = await albumResponse.json();
+       setAlbums(albumData.items);
+      // await fetch(
+      //   "https://api.spotify.com/v1/artists/" + artistID + "/albums?include_groups=album&market=US&limit=50",
+      //   artistParams
+      // )
+      //   .then((result) => result.json())
+      //   .then((data) => {
+      //     setAlbums(data.items);  
+      //   });
+
         setHasSearched(true); // search has been made with a response
         setError(null); //clear previous error
     } catch (error) {
@@ -91,14 +117,13 @@ function App() {
         },
       };
 
-      //Getting the array of tracks on the specified album
-      let tracks;
-      await fetch(
-        "https://api.spotify.com/v1/albums/" + albumID + "/tracks",
-        trackParams
-      )
-      .then((result) => result.json())
-      .then((data) => {tracks = data.items;});
+      //Get the albums tracks
+      const trackResponse = await fetch(
+         "https://api.spotify.com/v1/albums/" + albumID + "/tracks",
+         trackParams
+      );
+      const trackData = await trackResponse.json();
+      const tracks = trackData.items;
       console.log("tracks:", tracks); //TESTING
 
       //Get all the artists on the album
