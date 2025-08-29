@@ -1,5 +1,5 @@
 import './App.css'
-import { FormControl, InputGroup, Container, Button, Card, Row } from "react-bootstrap";
+import { FormControl, InputGroup, Container, Button, Card, Row, Alert } from "react-bootstrap";
 import { useState, useEffect } from "react";
 const clientID = import.meta.env.VITE_CLIENT_ID;
 const clientSecret = import.meta.env.VITE_CLIENT_SECRET;
@@ -11,6 +11,7 @@ function App() {
   const [accessToken, setAccessToken] = useState(""); //Use for API request
   const [hasSearched, setHasSearched] = useState(false);
   const [noFeatures, setNoFeatures] = useState([]); //tracks which albums have no features
+  const [error, setError] = useState(null); //user facing error state
 
   //Hook
   useEffect( () => {
@@ -43,27 +44,39 @@ function App() {
         Authorization: "Bearer " + accessToken,
       },
     };
-    
-    //GET artist
-    const artistID = await fetch(
-      "https://api.spotify.com/v1/search?q=" + searchInput + "&type=artist",
-      artistParams
-    )
-      .then((result) => result.json())
-      .then((data) => {
-        return data.artists.items[0].id;
-      });
 
-    //GET albums
-    await fetch(
-      "https://api.spotify.com/v1/artists/" + artistID + "/albums?include_groups=album&market=US&limit=50",
-      artistParams
-    )
-      .then((result) => result.json())
-      .then((data) => {
-        setAlbums(data.items);  
-      });
-      setHasSearched(true); // search has been made with a response
+    try {
+      //check for empty search input
+      if (searchInput.trim() === "") {
+        setError("Please enter an artist name to search.");
+        setHasSearched(false);
+        return;
+      }
+      //GET artist
+      const artistID = await fetch(
+        "https://api.spotify.com/v1/search?q=" + searchInput + "&type=artist",
+        artistParams
+      )
+        .then((result) => result.json())
+        .then((data) => {
+          return data.artists.items[0].id;
+        });
+
+      //GET albums
+      await fetch(
+        "https://api.spotify.com/v1/artists/" + artistID + "/albums?include_groups=album&market=US&limit=50",
+        artistParams
+      )
+        .then((result) => result.json())
+        .then((data) => {
+          setAlbums(data.items);  
+        });
+        setHasSearched(true); // search has been made with a response
+    } catch (error) {
+      console.error("Error during search:", error); //debug
+      setError("An error occurred during the search. Please try again.");
+      setHasSearched(false);
+    }
   }
 
   //GET album features
@@ -185,6 +198,18 @@ function App() {
 
       <Button onClick={search}>Search</Button>
       </InputGroup>
+
+      {error && (
+        <Alert 
+          variant="danger" 
+          onClose={() => setError(null)}
+          dismissible
+          style={{ marginTop: "10px", fontFamily: "sans-serif", padding: "15px" }}
+        >
+          {error}
+        </Alert>
+      )}
+
       <Container>
       <Row
         style={{
