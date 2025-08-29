@@ -100,33 +100,48 @@ function App() {
       });
 
       //get theses artists albums
-      const featuredArtistsAlbums = [];
+      const uniqueArtistsMap = new Map(); //used to check for duplicate artists
+      let featuredArtistsAlbums = [];
       const artistEntries = Array.from(artistData.entries()).slice(1); //skip the first entry so the current artist is not rendered twice
       for(const [fartistID, fartistName] of artistEntries) {
-        const falbumsResponse = await fetch(
-          "https://api.spotify.com/v1/artists/" + fartistID + "/albums?include_groups=album&market=US&limit=50",
-          {
-            method: "GET",
-            headers: {
-              Authorization: `Bearer ${accessToken}`,
-            },
+        if(!uniqueArtistsMap.has(fartistID)) { //proceed with API call if artist is not a duplicate
+            const falbumsResponse = await fetch(
+            "https://api.spotify.com/v1/artists/" + fartistID + "/albums?include_groups=album&market=US&limit=50",
+            {
+              method: "GET",
+              headers: {
+                Authorization: `Bearer ${accessToken}`,
+              },
+            }
+          );
+
+          const albumData = await falbumsResponse.json();
+
+          //check that featured artist actually have albums to render
+          if (albumData.items && albumData.items.length > 0) {
+            uniqueArtistsMap.set(fartistID, {
+              fartistID,
+              fartistName,
+              albums: albumData.items,
+            });
           }
-        );
-
-        const albumData = await falbumsResponse.json();
-
-        //check that featured artist actually have albums to render
-        if (albumData.items && albumData.items.length > 0) {
-          featuredArtistsAlbums.push({
-            fartistName,
-            albums: albumData.items,
-          });
         }
+        
       }
-      //console.log("featuredArtistsAlbums:", featuredArtistsAlbums); //TEST, might need to set expanded albums to just the album array?
-      //Convert the map entries to array for rendering
+      featuredArtistsAlbums = Array.from(uniqueArtistsMap.values());  //Convert the map entries to array for rendering
+
       if (featuredArtistsAlbums.length > 0) {
-        setExpandedAlbums(prev => [...prev, ...featuredArtistsAlbums]); //adding to list so previous renders not replaced
+        setExpandedAlbums(prevExpanded => {
+          const allUniqueArtists = new Map();
+
+          prevExpanded.forEach(artist => { //add previous artists first
+            allUniqueArtists.set(artist.fartistID, artist);
+          });
+          featuredArtistsAlbums.forEach(artist => { //only add new artists
+            allUniqueArtists.set(artist.fartistID, artist);
+          });
+          return Array.from(allUniqueArtists.values()); //convert map to array
+        });
       } else {
         setNoFeatures(prev => [...prev, albumID]); //track albums with no features
       }
